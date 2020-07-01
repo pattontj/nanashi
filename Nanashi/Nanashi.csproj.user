@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>NDkxNDUzMzQ5NzgzMTQyNDAx.XqaJXA.L8WSM_xilnYpLatT7FB5CQOrsEs</StartArguments>
+    <StartArguments></StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <StartArguments>NzAxNjc1NDY3Mjg3MTY3MDU2.Xp6IUw.7UKyIHtzpv_YxneGAu6NfY5aD_Q</StartArguments>
+    <StartArguments></StartArguments>
   </PropertyGroup>
 </Project>
