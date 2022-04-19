@@ -10,7 +10,7 @@ using Discord.WebSocket;
 
 using System.Xml;
 using System.Xml.Serialization;
-
+using System.Text.RegularExpressions;
 
 namespace Nanashi
 {
@@ -33,7 +33,7 @@ namespace Nanashi
         private ulong globalPostCount = 0;
 
 
-        private Dictionary<string, string> filterWords = new Dictionary<string, string>
+        private readonly Dictionary<string, string> filterWords = new Dictionary<string, string>
             {
             // Add word filters here
             {"~", ":woozy_face:" },
@@ -41,19 +41,22 @@ namespace Nanashi
             {"simp", "chad" },
             };
 
-        private List<ulong> Moderators = new List<ulong>
+        private readonly List<ulong> Moderators = new List<ulong>
         {
 
         };
 
-        public static void Main(string[] args)
-         => new Program().MainAsync(args[0]).GetAwaiter().GetResult();
+        public static void Main()
+         => new Program().MainAsync().GetAwaiter().GetResult();
 
-        public async Task MainAsync(string token)
+        public async Task MainAsync()
         {
-            if (!File.Exists("postcount.txt"))
+
+            /* if (!File.Exists("postcount.txt"))
+                Console.WriteLine("No postcounts?");
                 File.CreateText("postcount.txt");
 
+    */
             using (StreamReader sr = File.OpenText("postcount.txt"))
             {
                 string s = sr.ReadLine();
@@ -63,10 +66,29 @@ namespace Nanashi
                 {
                     globalPostCount = UInt64.Parse(s);
                 }
-
+                sr.Close();
             }
 
-            client = new DiscordSocketClient();
+
+            // Get token from file
+
+            String token;
+
+            using (StreamReader sr = File.OpenText("Token.txt")) {
+                string tk = sr.ReadLine();
+
+                
+
+                if (tk == null)
+                    throw new NotImplementedException("Token not found");
+                else
+                {
+                    token = tk;
+                }
+                sr.Close();
+            }
+
+                client = new DiscordSocketClient();
 
             await client.LoginAsync(TokenType.Bot,
                 token,
@@ -87,6 +109,13 @@ namespace Nanashi
             // put everything inside this or big spam occurs
             if (msg.Author.Id != client.CurrentUser.Id)
             {
+
+                if (msg.Content[0] == '!') 
+                {
+                    HandleModeratorAction(msg);
+                    return;
+                }
+
                 if (msg.Channel.GetType().Equals(typeof(SocketDMChannel)))
                 {
                     globalPostCount += 1;
@@ -174,5 +203,39 @@ namespace Nanashi
                 }
             }
         }
+
+        public void HandleModeratorAction(SocketMessage msg) 
+        {
+
+            Regex timeExpression = new Regex(@"(\d{0,}d)(\d{0,}h)(\d{0,}m)*");
+
+          
+
+            //   " /(ban\s)\d{1,}\g "
+
+            if (msg.Content.Contains("ban")) {
+                Console.WriteLine("ban");
+            }
+
+            //  Timeout regex    " /(\d{0,}d)*:(\d{0,}h)*:(\d{0,}m)*/g  "
+
+            if (msg.Content.Contains("timeout")) {
+                var matches = timeExpression.Match(msg.Content);
+                Console.WriteLine("timeout test");
+
+                
+                var timelist = Regex.Split(msg.Content, @"\D+");
+
+                foreach (var t in timelist)
+                {
+                    Console.WriteLine(t);
+                }
+
+              
+
+
+            }
+        }
+
     }
 }
